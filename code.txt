@@ -1,0 +1,4 @@
+import React from "react";
+import { UserCircleIcon, HomeModernIcon, CurrencyDollarIcon, ListBulletIcon, ChartBarSquareIcon } from '@heroicons/react/24/solid';
+´
+
