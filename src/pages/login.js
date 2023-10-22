@@ -1,17 +1,54 @@
-'use client';
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
+import { useRouter } from 'next/router'; // Importa el hook useRouter para gestionar redirecciones
 import distribuidoraImage from "../../public/logo2.png";
-import './css/main.css'
+
+import './css/main.css';
 
 const Login = () => {
-  const [email, setEmail] = useState("");
+  const [usuario, setUsuario] = useState("");
   const [password, setPassword] = useState("");
+  const router = useRouter(); // Inicializa el hook useRouter
 
-  const handleLogin = () => {
-    // Aquí puedes agregar la lógica de autenticación
-    // Por ahora, solo mostraremos un mensaje de inicio de sesión exitoso
-    alert(`Inicio de sesión exitoso\nEmail: ${email}\nContraseña: ${password}`);
+  useEffect(() => {
+    // Comprueba si el usuario está autenticado
+    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+    
+    // Si el usuario está autenticado, redirige a la página de inicio
+    if (isLoggedIn) {
+      router.push('/');
+    }
+  }, []);
+
+  const handleLogin = async () => {
+    event.preventDefault();
+    try {
+      const response = await fetch("http://localhost:3000/api/usuarios");
+      if (response.status === 200) {
+        const usuarios = await response.json();
+        const usuarioEncontrado = usuarios.find((u) => u.usuario === usuario && u.contrasenia === password);
+        if (usuarioEncontrado) {
+          // Las credenciales son correctas
+          console.log("Inicio de sesión exitoso");
+
+          // Guardar el estado de autenticación en localStorage o sessionStorage
+          localStorage.setItem('isLoggedIn', 'true');
+          localStorage.setItem('usuario', usuario);
+
+          // Redirige a la página de inicio
+          router.push('/');
+        } else {
+          console.error("Credenciales incorrectas");
+          // Muestra un mensaje de error en caso de credenciales incorrectas.
+        }
+      } else {
+        console.error("Error al iniciar sesión");
+        // Muestra un mensaje de error en caso de otros errores.
+      }
+    } catch (error) {
+      console.error("Error al iniciar sesión", error);
+      // Muestra un mensaje de error en caso de error.
+    }
   };
 
   return (
@@ -33,8 +70,8 @@ const Login = () => {
               id="usuario"
               className="mt-1 p-2 border rounded-md w-full"
               placeholder="Tu usuario"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={usuario}
+              onChange={(e) => setUsuario(e.target.value)}
               required
             />
           </div>
@@ -55,7 +92,7 @@ const Login = () => {
           <div>
             <button
               type="submit"
-              className="w-full p-3 bg-amber-600 text-white rounded-md font-semibold hover:bg-green-800"
+              className="w-full p-3 bg-amber-600 text-white rounded-md font-semibold hover-bg-green-800"
             >
               Acceder
             </button>
