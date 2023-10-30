@@ -1,89 +1,121 @@
-import React, { useState } from 'react';
-import Modal from 'react-modal';
-
-const customStyles = {
-  content: {
-    top: '50%',
-    left: '50%',
-    right: 'auto',
-    bottom: 'auto',
-    transform: 'translate(-50%, -50%)',
-    width: '300px',
-  },
-};
+import React, { useState, useEffect } from 'react';
 
 const AddProductModal = ({ isOpen, closeModal }) => {
   const [productName, setProductName] = useState('');
   const [productPrice, setProductPrice] = useState('');
-  const [productImage, setProductImage] = useState(null);
+  const [productImageURL, setProductImageURL] = useState('');
+  const [productType, setProductType] = useState('');
+  const [types, setTypes] = useState([]); // Estado para almacenar los tipos
 
-  const handleAddProduct = () => {
-    // Implementa la lógica para agregar el producto a tu inventario
-    // Puedes acceder a los valores de productName, productPrice y productImage
+  useEffect(() => {
+    const fetchTypes = async () => {
+      try {
+        const response = await fetch('http://localhost:3000/api/types');
+        if (response.ok) {
+          const data = await response.json();
+          setTypes(data);
+        } else {
+          console.error('Error al cargar los tipos desde la API');
+        }
+      } catch (error) {
+        console.error('Error al cargar los tipos desde la API:', error);
+      }
+    };
+
+    fetchTypes();
+  }, []);
+
+  const handleAddProduct = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/api/productos', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          nombre: productName,
+          precioVenta: parseFloat(productPrice),
+          imagenURL: productImageURL,
+          tipo: productType, 
+        }),
+      });
+
+      if (response.ok) {
+        closeModal();
+      } else {
+        console.error('Error al agregar el producto');
+      }
+    } catch (error) {
+      console.error('Error al agregar el producto:', error);
+    }
   };
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onRequestClose={closeModal}
-      style={customStyles}
-      contentLabel="Agregar Producto"
-      className="fixed inset-0 flex items-center justify-center outline-none"
-    >
-      <div className="bg-white p-4 rounded-lg shadow-lg w-64">
-        <h2 className="text-xl font-semibold mb-4">Agregar Producto</h2>
-        <form>
-          <div className="mb-4">
-            <label htmlFor="productName" className="block text-sm font-medium text-gray-600">
-              Nombre del Producto
-            </label>
-            <input
-              type="text"
-              id="productName"
-              value={productName}
-              onChange={(e) => setProductName(e.target.value)}
-              className="w-full py-2 px-3 border rounded focus:outline-none focus:border-blue-500"
-            />
-          </div>
-          <div className="mb-4">
-            <label htmlFor="productPrice" className="block text-sm font-medium text-gray-600">
-              Precio del Producto
-            </label>
-            <input
-              type="number"
-              id="productPrice"
-              value={productPrice}
-              onChange={(e) => setProductPrice(e.target.value)}
-              className="w-full py-2 px-3 border rounded focus:outline-none focus:border-blue-500"
-            />
-          </div>
-          <div className="mb-4">
-            <label htmlFor="productImage" className="block text-sm font-medium text-gray-600">
-              Imagen del Producto
-            </label>
-            <input
-              type="file"
-              id="productImage"
-              accept="image/*"
-              onChange={(e) => setProductImage(e.target.files[0])}
-              className="w-full py-2 px-3 border rounded focus:outline-none focus:border-blue-500"
-            />
-          </div>
-          <button
-            className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
-            onClick={handleAddProduct}
-          >
-            Agregar Producto
-          </button>
-        </form>
-        <button
-          className="mt-2 bg-gray-300 text-gray-700 py-2 px-4 rounded hover:bg-gray-400"
-          onClick={closeModal}
-        >
-          Cerrar
-        </button>
+    <div className={`modal fixed w-full h-full top-0 left-0 flex items-center justify-center ${isOpen ? '' : 'hidden'}`}>
+      <div className="modal-overlay absolute w-full h-full bg-gray-900 opacity-50"></div>
+      <div className="modal-container bg-white w-11/12 md:max-w-md mx-auto rounded shadow-lg z-50 overflow-y-auto">
+        <div className="modal-content py-4 text-left px-6">
+          <form>
+            <div className="mb-4">
+              <label htmlFor="productName" className="block text-gray-700 text-sm font-bold mb-2">Nombre del Producto</label>
+              <input
+                type="text"
+                id="productName"
+                value={productName}
+                onChange={(e) => setProductName(e.target.value)}
+                className="w-full bg-gray-200 rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              />
+            </div>
+
+            <div className="mb-4">
+              <label htmlFor="productType" className="block text-gray-700 text-sm font-bold mb-2">
+                Tipo de Producto
+              </label>
+              <select
+                id="productType"
+                value={productType}
+                onChange={(e) => setProductType(e.target.value)}
+                className="w-full bg-gray-200 rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              >
+                <option value="">Selecciona un tipo</option>
+                {types.map((type) => (
+                  <option key={type._id} value={type.tipo}>
+                    {type.tipo}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="mb-4">
+              <label htmlFor="productPrice" className="block text-gray-700 text-sm font-bold mb-2">Precio del Producto</label>
+              <input
+                type="text"
+                id="productPrice"
+                value={productPrice}
+                onChange={(e) => setProductPrice(e.target.value)}
+                className="w-full bg-gray-200 rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              />
+            </div>
+
+            <div className="mb-4">
+              <label htmlFor="productUrl" className="block text-gray-700 text-sm font-bold mb-2">URL del Producto</label>
+              <input
+                type="text"
+                id="productUrl"
+                value={productImageURL}
+                onChange={(e) => setProductImageURL(e.target.value)}
+                className="w-full bg-gray-200 rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              />
+            </div>
+
+            <div className="flex justify-end">
+              <button onClick={handleAddProduct} className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mr-4">Agregar Producto</button>
+              <button onClick={closeModal} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Cerrar</button>
+            </div>
+          </form>
+        </div>
       </div>
-    </Modal>
+    </div>
   );
 };
 

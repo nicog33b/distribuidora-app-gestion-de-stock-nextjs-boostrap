@@ -1,19 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import AddContactModal from './mini-componentes/addContactModal';
 import EditContactModal from './mini-componentes/editTables/editContactModal'; // Importa el nuevo componente
-import { PlusIcon, MagnifyingGlassIcon, PencilIcon, TrashIcon, EyeIcon } from '@heroicons/react/24/solid';
+import { PlusIcon, PencilIcon, TrashIcon, EyeIcon } from '@heroicons/react/24/solid';
 
 const ContactTable = () => {
   const [contacts, setContacts] = useState([]);
   const [isAddContactModalOpen, setAddContactModalOpen] = useState(false);
-  const [isEditContactModalOpen, setEditContactModalOpen] = useState(false); // Controla si se muestra el modal de edición
-  const [selectedContact, setSelectedContact] = useState(null); // Almacena el contacto seleccionado para editar
+  const [isEditContactModalOpen, setEditContactModalOpen] = useState(false);
+  const [selectedContact, setSelectedContact] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredContacts, setFilteredContacts] = useState([]);
   const [isTableRefreshing, setTableRefreshing] = useState(false);
 
+
+  const handleDeleteContact = async (contactId) => {
+    try {
+      const response = await fetch(`http://localhost:3000/api/personas/${contactId}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        // Eliminación exitosa, refrescar la tabla
+        setTableRefreshing(!isTableRefreshing);
+        console.log('Contacto eliminado correctamente');
+      } else {
+        console.error('Error al eliminar el contacto desde la API');
+      }
+    } catch (error) {
+      console.error('Error al eliminar el contacto desde la API:', error);
+    }
+  };
+  
   useEffect(() => {
-    // Función para cargar contactos desde la API
     const loadContacts = async () => {
       try {
         const response = await fetch('http://localhost:3000/api/personas');
@@ -29,7 +47,6 @@ const ContactTable = () => {
       }
     };
 
-    // Llamar a la función para cargar contactos
     loadContacts();
   }, [isTableRefreshing]);
 
@@ -60,35 +77,19 @@ const ContactTable = () => {
     closeEditContactModal();
   };
 
-  const handleSearch = () => {
-    const searchResults = contacts.filter((contact) => {
-      return (
-        contact._id.includes(searchTerm) ||
-        contact.nombre.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    });
-    setFilteredContacts(searchResults);
-  };
-
-  const clearSearch = () => {
-    setSearchTerm('');
-    setFilteredContacts(contacts);
-  };
-
-  const handleDeleteContact = async (contactId) => {
-    try {
-      const response = await fetch(`http://localhost:3000/api/personas/${contactId}`, {
-        method: 'DELETE',
+  useEffect(() => {
+    if (!searchTerm) {
+      setFilteredContacts(contacts);
+    } else {
+      const searchResults = contacts.filter((contact) => {
+        return (
+          contact._id.includes(searchTerm) ||
+          contact.nombre.toLowerCase().includes(searchTerm.toLowerCase())
+        );
       });
-      if (response.ok) {
-        setTableRefreshing(!isTableRefreshing); // Actualiza el valor para recargar la tabla
-      } else {
-        console.error('Error al eliminar el contacto');
-      }
-    } catch (error) {
-      console.error('Error en la solicitud DELETE:', error);
+      setFilteredContacts(searchResults);
     }
-  };
+  }, [searchTerm, contacts]);
 
   return (
     <div className="p-2">
@@ -101,20 +102,6 @@ const ContactTable = () => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-          <button
-            onClick={handleSearch}
-            className="bg-blue-500 text-white p-2 rounded-lg ml-2"
-          >
-            <MagnifyingGlassIcon className="w-4 h-4" />
-          </button>
-          {searchTerm && (
-            <button
-              onClick={clearSearch}
-              className="bg-gray-500 text-white p-2 rounded-lg ml-2"
-            >
-              Limpiar búsqueda
-            </button>
-          )}
         </div>
         <div>
           <button onClick={openAddContactModal} className="bg-green-500 text-white p-2 rounded">
@@ -127,6 +114,7 @@ const ContactTable = () => {
         <thead>
           <tr className="bg-gray-200">
             <th className="p-2">ID</th>
+            <th className="p-2">Empresa</th>
             <th className="p-2">Nombre</th>
             <th className="p-2">Tipo</th>
             <th className="p-2">Email</th>
@@ -139,13 +127,14 @@ const ContactTable = () => {
             filteredContacts.map((contact) => (
               <tr key={contact._id}>
                 <td className="p-2 border border-gray-300">{contact._id}</td>
+                <td className="p-2 border border-gray-300">{contact.empresa}</td>
                 <td className="p-2 border border-gray-300">{contact.nombre}</td>
                 <td className="p-2 border border-gray-300">{contact.tipo}</td>
                 <td className="p-2 border border-gray-300">{contact.email}</td>
                 <td className="p-2 border border-gray-300">{contact.telefono}</td>
                 <td className="p-2 border border-gray-300 text-center">
                   <button
-                    onClick={() => openEditContactModal(contact)} // Abre el modal de edición con el contacto seleccionado
+                    onClick={() => openEditContactModal(contact)}
                     className="bg-yellow-500 text-white p-2 rounded-lg mr-2"
                   >
                     <PencilIcon className="w-4 h-4" />
@@ -175,7 +164,7 @@ const ContactTable = () => {
         isOpen={isEditContactModalOpen}
         closeModal={closeEditContactModal}
         contact={selectedContact}
-        onEditContact={handleEditContact} // Pasa la función para manejar la edición
+        onEditContact={handleEditContact}
       />
     </div>
   );

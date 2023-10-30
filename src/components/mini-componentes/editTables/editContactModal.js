@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import Swal from 'sweetalert2';
 
@@ -7,13 +7,21 @@ const customStyles = {
 };
 
 const EditContactModal = ({ isOpen, closeModal, contact, onEditContact }) => {
-  const [contactName, setContactName] = useState(contact ? contact.nombre : '');
-  const [contactType, setContactType] = useState(contact ? contact.tipo : 'cliente');
-  const [contactPhone, setContactPhone] = useState(contact ? contact.telefono : '');
+  const [contactName, setContactName] = useState('');
+  const [contactType, setContactType] = useState('cliente');
+  const [contactPhone, setContactPhone] = useState('');
 
-
-  const handleEditContact = () => {
+  useEffect(() => {
+    if (contact) {
+      // Utiliza los setters para establecer los estados iniciales
+      setContactName(contact.nombre);
+      setContactType(contact.tipo);
+      setContactPhone(contact.telefono);
+    }
+  }, [contact]);
+  const handleEditContact = (event) => {
     event.preventDefault();
+
     const editedContact = {
       ...contact,
       nombre: contactName,
