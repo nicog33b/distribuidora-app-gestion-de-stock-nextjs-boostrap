@@ -5,6 +5,8 @@ import Sidebar from "@/components/sidebar";
 import SalesTable from "@/components/salesTable";
 import CrearVenta from "@/components/crearVenta";
 
+import NewSaleDate from "@/components/newSale";
+
 const Sales = () => {
   return (
     <div className="w-full">
@@ -12,7 +14,7 @@ const Sales = () => {
       <div className="flex h-full">
         <Sidebar />
         <div className="flex-1 p-4 bg-white w-full lg:w-3/4 xl:w-4/5 mx-auto overflow-x-auto">
-          <CrearVenta></CrearVenta>
+          <NewSaleDate></NewSaleDate>
         </div>
       </div>
     </div>
