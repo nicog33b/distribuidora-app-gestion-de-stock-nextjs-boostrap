@@ -118,9 +118,9 @@ const UserSelectionComponent = () => {
 
 {/*TABLA DONDE MUESTRA LOS PERSONAS INGRESADOS */}
 
-<table className="mt-4 border-collapse border border-gray-300 w-full">
+<table className="mt-4 border-collapse border border-black w-full">
         <thead>
-          <tr className='bg-blue-50'>
+          <tr className='bg-blue-50 border-black'>
             <th className="border p-2">Nombre</th>
             <th className="border p-2">Tipo</th>
             <th className='border p-2'>Telefono</th>

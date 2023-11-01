@@ -56,9 +56,9 @@ const AddTypeModal = ({ isOpen, closeModal }) => {
             />
           </div>
 
-          <div className="flex justify-end">
-            <button onClick={handleAddType} className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mr-4">Crear Tipo</button>
-            <button onClick={closeModal} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Cerrar</button>
+          <div className="flex justify-center mt-4">
+            <button onClick={handleAddType} className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-full mr-4">Crear Tipo</button>
+            <button onClick={closeModal} className="bg-gray-500 hover:bg-red-600 text-white font-bold py-2 px-6 rounded-full ">Cerrar</button>
           </div>
         </div>
       </div>

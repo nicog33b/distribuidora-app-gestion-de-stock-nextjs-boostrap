@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import LoteProductModal from '../mini-componentes/editTables/addLoteProduct'; // Importar el componente del modal de lote
+import Swal from 'sweetalert2'; // Importar SweetAlert
 
 const ProductSearch = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -8,30 +9,51 @@ const ProductSearch = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [modalIsOpen, setModalIsOpen] = useState(false); 
   const [selectedProducts, setSelectedProducts] = useState([]);
+  const [tableProductsStocks, setTableProductsStocks] = useState([]);
 
   
+
+
   const agregarProducto = (selectedProduct, selectedLots) => {
     const existingProductIndex = selectedProducts.findIndex(
       (product) => product.producto._id === selectedProduct._id
     );
 
+     // Verificar si el producto ya está en tableProductsStocks
+     const isProductInStocks = tableProductsStocks.some(
+      (item) => item.productId === selectedProduct._id
+    );
+
+    if (isProductInStocks) {
+ 
+      Swal.fire({
+        icon: 'error',
+        title: 'Producto existente',
+        text: 'Este producto ya ha sido agregado',
+      });
+
+
+      return;
+    }
+
+
     if (existingProductIndex !== -1) {
       const updatedSelectedProducts = [...selectedProducts];
       const existingProduct = updatedSelectedProducts[existingProductIndex];
-
+  
       if (existingProduct.hasOwnProperty('cantidad')) {
         const updatedLots = { ...existingProduct.cantidad };
-
+  
         Object.keys(selectedLots).forEach((lotId) => {
           updatedLots[lotId] = (updatedLots[lotId] || 0) + selectedLots[lotId];
         });
-
+  
         existingProduct.cantidad = updatedLots;
         updatedSelectedProducts[existingProductIndex] = existingProduct;
       } else {
         existingProduct.cantidad = { ...selectedLots };
       }
-
+  
       setSelectedProducts(updatedSelectedProducts);
     } else {
       setSelectedProducts([
@@ -42,15 +64,36 @@ const ProductSearch = () => {
         },
       ]);
     }
+  
+    // Actualizar tableProductsStocks
+    setTableProductsStocks((prevTableProductsStocks) => [
+      ...prevTableProductsStocks,
+      {
+        productId: selectedProduct._id,
+        lots: Object.keys(selectedLots).map((lotId) => ({
+          stockId: lotId,
+          cantidad: selectedLots[lotId],
+        })),
+      },
+    ]);
   };
   
-  // Lógica para eliminar un producto del array de productos seleccionados
-const eliminarProducto = (productId) => {
-  const updatedSelectedProducts = selectedProducts.filter(
-    (product) => product.producto._id !== productId
-  );
-  setSelectedProducts(updatedSelectedProducts);
-};
+  
+  const eliminarProducto = (productId) => {
+    console.log(tableProductsStocks)
+    const updatedTableProductsStocks = tableProductsStocks.filter(
+      (item) => item.productId !== productId
+    );
+  
+    setTableProductsStocks(updatedTableProductsStocks);
+  
+    const updatedSelectedProducts = selectedProducts.filter(
+      (product) => product.producto._id !== productId
+    );
+  
+    setSelectedProducts(updatedSelectedProducts);
+  };
+  
 
   useEffect(() => {
     fetch('http://localhost:3000/api/productos')
@@ -119,9 +162,9 @@ const eliminarProducto = (productId) => {
       />
 
 
-      <table className="w-full border-collapse border border-gray-300 mt-4">
+      <table className="w-full border-collapse border border-black mt-4">
         <thead>
-          <tr className='rounded bg-green-500'>
+          <tr className='rounded bg-green-50'>
             <th className="border border-gray-400">ID</th>
             <th className="border border-gray-400">Nombre</th>
             <th className="border border-gray-400">Unitario</th>
@@ -150,6 +193,20 @@ const eliminarProducto = (productId) => {
       })}
     </tbody>
       </table>
+
+      <table className="w-2/12 border-collapse border ms-auto border-black mt-4">
+      <thead>
+        <tr className='rounded bg-green-50'>
+          <th className="border border-gray-400">Precio Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td className="border border-gray-400">$5000</td>
+        </tr>
+      </tbody>
+    </table>
+
 
     </div>
   );
