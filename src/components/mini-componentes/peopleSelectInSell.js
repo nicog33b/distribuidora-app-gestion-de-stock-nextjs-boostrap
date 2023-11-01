@@ -80,7 +80,7 @@ const UserSelectionComponent = () => {
 <div className="grid grid-cols-4 gap-4">
   {/* Mostrar usuarios filtrados */}
   {filteredUsers.map(user => (
-    <div key={user._id} onClick={() => handleSelectUser(user)} className="border rounded bg-slate-300 p-2 text-center hover:bg-lime-200">
+    <div key={user._id} onClick={() => handleSelectUser(user)} className="border border-black rounded p-2 text-center hover:bg-lime-100">
       <div className='font-sans text-amber-800'>
         {user.nombre}
       </div>
@@ -120,7 +120,7 @@ const UserSelectionComponent = () => {
 
 <table className="mt-4 border-collapse border border-gray-300 w-full">
         <thead>
-          <tr>
+          <tr className='bg-blue-50'>
             <th className="border p-2">Nombre</th>
             <th className="border p-2">Tipo</th>
             <th className='border p-2'>Telefono</th>
