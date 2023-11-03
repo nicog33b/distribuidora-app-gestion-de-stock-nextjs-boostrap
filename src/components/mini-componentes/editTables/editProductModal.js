@@ -4,64 +4,86 @@ import Swal from 'sweetalert2';
 
 const EditProductModal = ({ isOpen, closeModal, product, onEditProduct }) => {
   const [productName, setProductName] = useState('');
-  const [productType, setProductType] = useState('');
-  const [productPrice, setProductPrice] = useState('');
+  const [productVenta, setProductVenta] = useState('');
+  const [productCompra, setProductCompra] = useState('');
   const [productImageURL, setProductImageURL] = useState('');
+  const [productType, setProductType] = useState('');
+  const [types, setTypes] = useState([]); // Estado para almacenar los tipos
+
+  useEffect(() => {
+    const fetchTypes = async () => {
+      try {
+        const response = await fetch('http://localhost:3000/api/types');
+        if (response.ok) {
+          const data = await response.json();
+          setTypes(data);
+        } else {
+          console.error('Error al cargar los tipos desde la API');
+        }
+      } catch (error) {
+        console.error('Error al cargar los tipos desde la API:', error);
+      }
+    };
+
+    fetchTypes();
+  }, []);
+
 
   useEffect(() => {
     if (product) {
       setProductName(product.nombre);
-      setProductType(product.tipo);
-      setProductPrice(product.precioVenta);
+      setProductVenta(product.precioVenta);
+      setProductCompra(product.precioCompra);
       setProductImageURL(product.imagenURL);
+      setProductType(product.tipo);
     }
   }, [product]);
 
-  const handleEditProduct = (event) => {
+  const handleEditProduct = async (event) => {
     event.preventDefault();
 
     const editedProduct = {
       ...product,
       nombre: productName,
-      tipo: productType,
-      precioVenta: parseFloat(productPrice),
+      precioVenta: parseFloat(productVenta),
+      precioCompra: parseFloat(productCompra),
       imagenURL: productImageURL,
+      tipo: productType,
     };
 
-    fetch(`http://localhost:3000/api/productos/${product._id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(editedProduct),
-    })
-      .then((response) => {
-        if (response.ok) {
-          closeModal();
-          Swal.fire({
-            title: 'Éxito',
-            text: 'Producto actualizado exitosamente',
-            icon: 'success',
-          });
-          onEditProduct(editedProduct);
-        } else {
-          Swal.fire({
-            title: 'Error',
-            text: 'Hubo un problema al actualizar el producto',
-            icon: 'error',
-          });
-        }
-      })
-      .catch((error) => {
-        console.error('Error en la solicitud PUT:', error);
+    try {
+      const response = await fetch(`http://localhost:3000/api/productos/${product._id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(editedProduct),
+      });
+
+      if (response.ok) {
+        closeModal();
+        Swal.fire({
+          title: 'Éxito',
+          text: 'Producto actualizado exitosamente',
+          icon: 'success',
+        });
+        onEditProduct(editedProduct);
+      } else {
         Swal.fire({
           title: 'Error',
           text: 'Hubo un problema al actualizar el producto',
           icon: 'error',
         });
+      }
+    } catch (error) {
+      console.error('Error en la solicitud PUT:', error);
+      Swal.fire({
+        title: 'Error',
+        text: 'Hubo un problema al actualizar el producto',
+        icon: 'error',
       });
+    }
   };
-
   return (
     <Modal
       isOpen={isOpen}
@@ -96,25 +118,45 @@ const EditProductModal = ({ isOpen, closeModal, product, onEditProduct }) => {
                 onChange={(e) => setProductType(e.target.value)}
                 className="w-full py-2 px-3 border rounded focus:outline-none focus:border-blue-500"
               >
-                <option value="">Seleccionar tipo</option>
-                <option value="Electrónicos">Electrónicos</option>
-                <option value="Ropa">Ropa</option>
-                <option value="Hogar">Hogar</option>
-                {/* Agregar más opciones de tipo aquí si es necesario */}
+                    <option value="">Elegir tipo</option> {/* Opción adicional */}
+    {types.map((type) => (
+      <option key={type._id} value={type.tipo}>
+        {type.tipo}
+      </option>
+    ))}
               </select>
             </div>
-            <div className="mb-4">
-              <label htmlFor="productPrice" className="block text-sm font-medium text-gray-600">
-                Precio del Producto
-              </label>
-              <input
-                type="number"
-                id="productPrice"
-                value={productPrice}
-                onChange={(e) => setProductPrice(e.target.value)}
-                className="w-full py-2 px-3 border rounded focus:outline-none focus:border-blue-500"
-              />
+
+            {/* Agregar el bloque de Venta y Compra */}
+            <div className="mb-4 flex">
+              <div style={{ flex: '0 0 50%', marginRight: '10px' }}>
+                <label htmlFor="productVenta" className="block text-gray-700 text-sm font-bold mb-2">
+                  Venta
+                </label>
+                <input
+                  type="number"
+                  id="productVenta"
+                  value={productVenta}
+                  onChange={(e) => setProductVenta(e.target.value)}
+                  className="w-full bg-gray-200 rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                />
+              </div>
+              <div style={{ flex: '0 0 50%' }}>
+                <label htmlFor="productCompra" className="block text-gray-700 text-sm font-bold mb-2">
+                  Compra
+                </label>
+                <input
+                  type="number"
+                  id="productCompra"
+                  value={productCompra}
+                  onChange={(e) => setProductCompra(e.target.value)}
+                  className="w-full bg-gray-200 rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                />
+              </div>
             </div>
+            {/* Fin de bloque Venta y Compra */}
+
+
             <div className="mb-4">
               <label htmlFor="productImageURL" className="block text-sm font-medium text-gray-600">
                 URL de la Imagen del Producto

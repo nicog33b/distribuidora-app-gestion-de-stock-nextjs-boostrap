@@ -1,12 +1,31 @@
 import React, { useState, useEffect } from 'react';
 import { TrashIcon } from '@heroicons/react/24/solid';
-
-const UserSelectionComponent = () => {
+const UserSelectionComponent = ({ onUserDataChange, onTransactionTypeChange,}) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [users, setUsers] = useState([]);
     const [filteredUsers, setFilteredUsers] = useState([]);
     const [selectedUsersList, setSelectedUsersList] = useState([]);
-  
+    const [transactionDate, setTransactionDate] = useState([]);
+    const [transactionTime, setTransactionTime] = useState([]);
+    const [transactionType, setTransactionType] = useState('venta'); // Estado para el tipo de transacción (venta por defecto)
+
+
+    
+    // Función para manejar cambios y pasar datos a componente padre
+   const handleDataChange = () => {
+    onUserDataChange({
+      selectedUsersList,
+      transactionDate,
+      transactionTime,
+      transactionType, // Incluir el tipo de transacción en los datos enviados
+    });
+  };
+
+  // Dentro del useEffect o en cualquier cambio que quieras escuchar
+  useEffect(() => {
+    handleDataChange(); // Llamar a la función cuando cambie algún dato
+  }, [selectedUsersList,transactionDate,transactionTime]);
+
     const handleDeleteUser = (index) => {
       const updatedUsersList = [...selectedUsersList];
       updatedUsersList.splice(index, 1);
@@ -53,10 +72,20 @@ const UserSelectionComponent = () => {
 {/*ELEGIR VENTA-COMPRA Y BUSCADOR DE PERSONA*/}
       <div className="flex  items-center w-full mt-4">
     <div className="p-2 border text-center font-serif border-gray-300 w-6/12">
-        <select name="tipoTransaccion"  className='w-full'>
+    <select
+            name="tipoTransaccion"
+            value={transactionType}
+            onChange={(e) => {
+              setTransactionType(e.target.value);
+              onTransactionTypeChange(e.target.value); // Enviar el nuevo valor al componente padre
+            }}
+            className='w-full'
+            
+          >
             <option value="venta">Venta</option>
             <option value="compra">Compra</option>
-        </select>
+          </select>
+
     </div>
     <div className="p-2 border text-center font-serif border-gray-300 w-full">
     <input
@@ -103,13 +132,16 @@ const UserSelectionComponent = () => {
     className="w-5/12 p-2 border rounded border-gray-300 mr-2"
     type="date"
     placeholder="Fecha de ingreso de la transacción"
-    // Agrega aquí el código para manejar la fecha de ingreso de la transacción
+    value={transactionDate}
+    onChange={(e) => setTransactionDate(e.target.value)}
+   
   />
   <input
     className="w-5/12 p-2 border rounded border-gray-300 ml-2"
     type="time"
     placeholder="Hora de ingreso"
-    // Agrega aquí el código para manejar la hora de ingreso de la transacción
+    value={transactionTime}
+    onChange={(e) => setTransactionTime(e.target.value)}
   />
 </div>
 

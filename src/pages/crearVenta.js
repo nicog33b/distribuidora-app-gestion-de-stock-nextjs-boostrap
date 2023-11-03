@@ -6,18 +6,18 @@ import SalesTable from "@/components/salesTable";
 
 import NewSaleDate from "@/components/newSale";
 
-const Sales = () => {
+const createSale = () => {
   return (
     <div className="w-full">
       <Navbar />
       <div className="flex h-full">
         <Sidebar />
         <div className="flex-1 p-4 bg-white w-full lg:w-3/4 xl:w-4/5 mx-auto overflow-x-auto">
-          <SalesTable></SalesTable>
+          <NewSaleDate></NewSaleDate>
         </div>
       </div>
     </div>
   );
 };
 
-export default Sales;
+export default createSale;

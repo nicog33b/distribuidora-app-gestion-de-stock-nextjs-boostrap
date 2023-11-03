@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 
 const AddProductModal = ({ isOpen, closeModal }) => {
   const [productName, setProductName] = useState('');
-  const [productPrice, setProductPrice] = useState('');
+  const [productVenta, setProductVenta] = useState('');
+  const [productCompra, setProductCompra] = useState('');
   const [productImageURL, setProductImageURL] = useState('');
   const [productType, setProductType] = useState('');
   const [types, setTypes] = useState([]); // Estado para almacenar los tipos
@@ -34,19 +35,17 @@ const AddProductModal = ({ isOpen, closeModal }) => {
         },
         body: JSON.stringify({
           nombre: productName,
-          precioVenta: parseFloat(productPrice),
+          precioVenta: parseFloat(productVenta),
+          precioCompra: parseFloat(productCompra), // Aquí corregir el nombre del estado
           imagenURL: productImageURL,
           tipo: productType,
         }),
       });
-
-      if (response.ok) {
-        closeModal();
-      } else {
-        console.error('Error al agregar el producto');
-      }
+  
+      // Resto del código...
     } catch (error) {
       console.error('Error al agregar el producto:', error);
+      // Manejar errores de red u otros errores
     }
   };
 
@@ -67,16 +66,35 @@ const AddProductModal = ({ isOpen, closeModal }) => {
               />
             </div>
 
-            <div className="mb-4">
-              <label htmlFor="productPrice" className="block text-gray-700 text-sm font-bold mb-2">Precio del Producto</label>
-              <input
-                type="number"
-                id="productPrice"
-                value={productPrice}
-                onChange={(e) => setProductPrice(e.target.value)}
-                className="w-full bg-gray-200 rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              />
+           {/* Agregar el bloque de Venta y Compra */}
+           <div className="mb-4 flex">
+              <div style={{ flex: '0 0 50%', marginRight: '10px' }}>
+                <label htmlFor="productVenta" className="block text-gray-700 text-sm font-bold mb-2">
+                  Venta
+                </label>
+                <input
+                  type="number"
+                  id="productVenta"
+                  value={productVenta}
+                  onChange={(e) => setProductVenta(e.target.value)}
+                  className="w-full bg-gray-200 rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                />
+              </div>
+              <div style={{ flex: '0 0 50%' }}>
+                <label htmlFor="productCompra" className="block text-gray-700 text-sm font-bold mb-2">
+                  Compra
+                </label>
+                <input
+                  type="number"
+                  id="productCompra"
+                  value={productCompra}
+                  onChange={(e) => setProductCompra(e.target.value)}
+                  className="w-full bg-gray-200 rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                />
+              </div>
             </div>
+            {/* Fin de bloque Venta y Compra */}
+
 
             <div className="mb-4">
               <label htmlFor="productImageURL" className="block text-gray-700 text-sm font-bold mb-2">URL de la Imagen</label>
@@ -90,21 +108,21 @@ const AddProductModal = ({ isOpen, closeModal }) => {
             </div>
 
             <div className="mb-4">
-              <label htmlFor="productType" className="block text-gray-700 text-sm font-bold mb-2">Tipo de Producto</label>
-              <select
-                id="productType"
-                value={productType}
-                onChange={(e) => setProductType(e.target.value)}
-                className="w-full bg-gray-200 rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              >
-                
-                {types.map((type) => (
-                  <option key={type._id} value={type.tipo}>
-                    {type.tipo}
-                  </option>
-                ))}
-              </select>
-            </div>
+  <label htmlFor="productType" className="block text-gray-700 text-sm font-bold mb-2">Tipo de Producto</label>
+  <select
+    id="productType"
+    value={productType}
+    onChange={(e) => setProductType(e.target.value)}
+    className="w-full bg-gray-200 rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+  >
+    <option value="">Elegir tipo</option> {/* Opción adicional */}
+    {types.map((type) => (
+      <option key={type._id} value={type.tipo}>
+        {type.tipo}
+      </option>
+    ))}
+  </select>
+</div>
 
 
 <div className="flex justify-center mt-4">

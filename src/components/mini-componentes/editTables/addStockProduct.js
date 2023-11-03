@@ -1,26 +1,57 @@
-import React, { useState } from "react";
-import AddProductModal from './../addProductModal';
-   
-const EditStockModal = ({ isOpen, closeModal, agregarProductoCompra}) => {
+import React, { useState } from 'react';
+import Swal from 'sweetalert2';
+
+const AddStock = ({ isOpen, closeModal, productId }) => {
   const [stockTotal, setStockTotal] = useState(0);
   const [fechaVencimiento, setFechaVencimiento] = useState('');
+  const [nombre, setNombre] = useState(''); // Nuevo campo para identificar el lote
 
-  const handleStockSubmit = (e) => {
-    e.preventDefault();
-    const newStockData = parseFloat(stockTotal);
-    const stockDetails = {
-      stockQuantity: newStockData,
-      expirationDate: fechaVencimiento,
+  const handleStockSubmit = async (event) => {
+    event.preventDefault();
+  
+    const newStock = {
+      productId,
+      stockTotal: parseInt(stockTotal),
+      fechaVencimiento,
+      nombre, // Incorporar el nombre del lote
     };
-
-    // Llamar a la función agregarProductoCompra con la cantidad y la fecha
-    agregarProductoCompra(stockDetails.stockQuantity,fechaVencimiento);
-    closeModal();
+  
+    try {
+      const response = await fetch('http://localhost:3000/api/stocks', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newStock),
+      });
+  
+      if (response.ok) {
+        Swal.fire({
+          title: 'Éxito',
+          text: 'Nuevo stock agregado exitosamente',
+          icon: 'success',
+        }).then(() => {
+          closeModal(); // Close the modal after success message
+          window.location.reload();
+        });
+      } else {
+        Swal.fire({
+          title: 'Error',
+          text: 'Hubo un problema al agregar el stock',
+          icon: 'error',
+        });
+      }
+    } catch (error) {
+      console.error('Error al agregar stock:', error);
+      Swal.fire({
+        title: 'Error',
+        text: 'Hubo un problema al agregar el stock',
+        icon: 'error',
+      });
+    }
   };
-
   
 
- 
   return (
     <div className={`modal fixed w-full h-full top-0 left-0 flex items-center justify-center ${isOpen ? '' : 'hidden'}`}>
       <div className="modal-overlay absolute w-full h-full bg-gray-900 opacity-50"></div>
@@ -67,4 +98,4 @@ const EditStockModal = ({ isOpen, closeModal, agregarProductoCompra}) => {
   );
 };
 
-export default EditStockModal;
+export default AddStock;

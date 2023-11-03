@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import EditStockModal from "./mini-componentes/editTables/editStockModal";
+import AddStock from "./mini-componentes/editTables/addStockProduct";
 import AddProductModal from "./mini-componentes/addProductModal";
 import AddTypeModal from "./mini-componentes/addTypeModal";
 import EditProductModal from "./mini-componentes/editTables/editProductModal";
@@ -23,19 +23,19 @@ const ProductTable = () => {
   const [isAddTypeModalOpen, setAddTypeModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredProducts, setFilteredProducts] = useState([]);
-  const [isEditStockModalOpen, setEditStockModalOpen] = useState(false);
-  const [selectedProductIdForStock, setSelectedProductIdForStock] = useState(null);
+  const [isAddStockModalOpen, setAddStockModalOpen] = useState(false);
+const [selectedProductId, setSelectedProductId] = useState()
 
-
-  const openEditStockModal = (productId) => {
-    setSelectedProductIdForStock(productId);
-    setEditStockModalOpen(true);
+  const openAddStockModal = (productId) => {
+    setAddStockModalOpen(true);
+    setSelectedProductId(productId); // Fijar el ID del producto seleccionado
   };
 
-  const closeEditStockModal = () => {
-    setEditStockModalOpen(false);
+  const closeAddStockModal = () => {
+    setAddStockModalOpen(false);
   };
 
+  
   const openAddTypeModal = () => {
     setAddTypeModalOpen(true);
   };
@@ -191,7 +191,8 @@ const ProductTable = () => {
             <tr className="bg-gray-200">
               <th className="p-1">Nombre</th>
               <th className="p-1">Tipo</th>
-              <th className="p-1">Precio</th>
+              <th className="p-1">Venta</th>
+              <th className="p-1">Compra</th>
               <th className="p-1">Stock</th>
               <th className="p-1">Imagen</th>
               <th className="p-1">Acciones</th>
@@ -210,8 +211,11 @@ const ProductTable = () => {
                   {`$${product.precioVenta}`}
                 </td>
                 <td className="p-1 border text-center font-serif border-gray-300">
-                {product.stockTotal}
-            </td>
+                  {`$${product.precioCompra}`}
+                </td>
+                <td className="p-1 border text-center font-serif border-gray-300">
+                  {product.stockTotal}
+                </td>
                 <td className="p-1 border border-gray-300 text-center">
                   <img
                     src={product.imagenURL}
@@ -233,18 +237,17 @@ const ProductTable = () => {
                     <TrashIcon className="h-4 w-4" />
                   </button>
                   <button
-                    className="bg-green-500 text-white p-2 rounded-lg m-1"
-                    onClick={() => openEditStockModal(product._id)}
+                    className="bg-amber-800 text-white p-2 rounded-lg m-1"
+                    onClick={() => openAddStockModal(product._id)}
                   >
-                    <ClipboardIcon className="h-4 w-4" />
+                    <ClipboardIcon className="h-4 w-4"></ClipboardIcon>
                   </button>
-                    <button className="bg-amber-800 text-white p-2 rounded-lg m-1">
+                  <button className="bg-amber-800 text-white p-2 rounded-lg m-1">
                     <ShareIcon
                       className="h-4 w-4"
                       onClick={() => copyToClipboard(product._id)}
                     />
                   </button>
-                  
                 </td>
               </tr>
             ))}
@@ -252,10 +255,15 @@ const ProductTable = () => {
         </table>
       </div>
 
-
-{/*
+      {/*
  ----------------- MODALS ------------------------
 */}
+    <AddStock
+        isOpen={isAddStockModalOpen}
+        closeModal={closeAddStockModal}
+        productId={selectedProductId} // Asegúrate de tener el ID del producto seleccionado
+      />
+
       <EditProductModal
         isOpen={isEditProductModalOpen}
         closeModal={closeEditProductModal}
@@ -265,17 +273,7 @@ const ProductTable = () => {
           loadProducts();
         }}
       />
-    <EditStockModal
-  isOpen={isEditStockModalOpen}
-  closeModal={closeEditStockModal}
-  productId={selectedProductIdForStock} // Asegúrate de que aquí esté pasando el productId
-/>
-
-
-
-      
-    </div>   
-
+    </div>
   );
 };
 
