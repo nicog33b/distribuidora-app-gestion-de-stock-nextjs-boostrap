@@ -1,14 +1,12 @@
-import React, { useState } from 'react';
-import UserSelectionComponent from './mini-componentes/peopleSelectInSell';
-import ProductSearch from './mini-componentes/productSelectedInSell';
+import React, { useState } from "react";
+import UserSelectionComponent from "./mini-componentes/peopleSelectInSell";
+import ProductSearch from "./mini-componentes/productSelectedInSell";
 
 const NewSaleDate = () => {
   const [userData, setUserData] = useState({});
   const [productData, setProductData] = useState({});
-  const [transactionComment, setTransactionComment] = useState('');
-  const [transactionType, setTransactionType] = useState('venta'); // Estado para transactionType
-
-
+  const [transactionComment, setTransactionComment] = useState("");
+  const [transactionType, setTransactionType] = useState("venta"); // Estado para transactionType
 
   const handleUserDataChange = (data) => {
     setUserData(data);
@@ -26,10 +24,13 @@ const NewSaleDate = () => {
     setTransactionType(type);
   };
 
-
-
   const handleTransactionPost = async () => {
-    const { selectedUsersList, transactionDate, transactionTime, transactionType } = userData;
+    const {
+      selectedUsersList,
+      transactionDate,
+      transactionTime,
+      transactionType,
+    } = userData;
     const { selectedProducts, montoTotal } = productData;
 
     const ventaTransactionData = {
@@ -37,22 +38,22 @@ const NewSaleDate = () => {
       fecha: transactionDate,
       hora: transactionTime,
       montoTotal: montoTotal,
-      personas: selectedUsersList.map(user => ({
+      personas: selectedUsersList.map((user) => ({
         idPersona: user._id,
         nombre: user.nombre,
         telefono: user.telefono,
         empresa: user.empresa,
-        email: user.email
+        email: user.email,
       })),
-      tableFinal: selectedProducts.map(product => ({
+      tableFinal: selectedProducts.map((product) => ({
         productId: product.producto._id,
         nombre: product.producto.nombre,
         precioUnitario: product.producto.precioVenta,
-        lots: Object.keys(product.cantidad).map(stockId => ({
+        lots: Object.keys(product.cantidad).map((stockId) => ({
           stockId,
           cantidad: product.cantidad[stockId],
-          fechaVencimiento: product.fechaVencimiento
-        }))
+          fechaVencimiento: product.fechaVencimiento,
+        })),
       })),
     };
 
@@ -61,71 +62,160 @@ const NewSaleDate = () => {
       fecha: transactionDate,
       hora: transactionTime,
       montoTotal: montoTotal,
-      personas: selectedUsersList.map(user => ({
+      personas: selectedUsersList.map((user) => ({
         idPersona: user._id,
         nombre: user.nombre,
         telefono: user.telefono,
         empresa: user.empresa,
-        email: user.email
+        email: user.email,
       })),
-      tableFinal: selectedProducts.map(product => ({
+      tableFinal: selectedProducts.map((product) => ({
         productId: product.producto._id,
         nombre: product.producto.nombre,
         precioUnitario: product.producto.precioCompra,
-        lots:{
+        lots: selectedProducts.map((product) => ({
           cantidad: product.cantidad,
-          fechaVencimiento: product.fechaVencimiento
-        }
+          fechaVencimiento: product.fechaVencimiento,
+        }))
       })),
     };
 
-    console.log(ventaTransactionData)
-    
+
+
     let transactionData = {}; // Inicializa un objeto para contener los datos de la transacción
 
     // Verifica el tipo de transacción y asigna los datos correspondientes
-    if (transactionType === 'compra') {
+    if (transactionType === "compra") {
       transactionData = compraTransactionData;
-    } else if (transactionType === 'venta') {
+    } else if (transactionType === "venta") {
       transactionData = ventaTransactionData;
     }
-  
+
     try {
-      const response = await fetch('http://localhost:3000/api/transacciones', {
-        method: 'POST',
+      const response = await fetch("http://localhost:3000/api/transacciones", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(transactionData), // Utiliza el objeto adecuado según el tipo de transacción
       });
 
       if (response.ok) {
         const data = await response.json();
-        console.log('Transacción creada:', data);
+        console.log("Transacción creada:", data);
 
-      //Crear lotes 
+        if (transactionType === "venta") {
+          for (const product of ventaTransactionData.tableFinal) {
+            for (const lot of product.lots) {
+              try {
+                const stockResponse = await fetch(
+                  `http://localhost:3000/api/stock/${lot.stockId}`
+                );
+                if (stockResponse.ok) {
+                  const stockData = await stockResponse.json();
+                  if (stockData.length > 0) {
+                    const currentStockTotal = stockData[0].stockTotal;
+
+                    if (!isNaN(currentStockTotal)) {
+                      const updatedStockTotal =
+                        currentStockTotal - lot.cantidad;
+                      lot.stockTotal = updatedStockTotal;
+                      console.log("Lote actualizado:", updatedStockTotal);
+
+                      // Realizar el PUT con el stockTotal actualizado
+                      const updateStockResponse = await fetch(
+                        `http://localhost:3000/api/stocks/${lot.stockId}`,
+                        {
+                          method: "PUT",
+                          headers: {
+                            "Content-Type": "application/json",
+                          },
+                          body: JSON.stringify({
+                            stockTotal: updatedStockTotal, // Actualizar el stockTotal con el nuevo valor
+                          }),
+                        }
+                      );
+
+                      if (updateStockResponse.ok) {
+                        const updatedLot = await updateStockResponse.json();
+                        console.log("Lote actualizado:", updatedLot);
+                      } else {
+                        console.error(
+                          "Error al actualizar el lote:",
+                          updateStockResponse.status
+                        );
+                        // Manejo de errores
+                      }
+                    } else {
+                      console.error(
+                        "El valor del stock total no es un número válido."
+                      );
+                    }
+                  } else {
+                    console.error(
+                      "No se encontraron datos de stock para el ID proporcionado."
+                    );
+                  }
+                } else {
+                  console.error(
+                    "Error al obtener el stock:",
+                    stockResponse.status
+                  );
+                  // Manejo de errores
+                }
+              } catch (error) {
+                console.error("Error:", error);
+                // Manejo de errores de red u otros errores
+              }
+            }
+          }
+        } else if(transactionType==='compra'){
+          for (const product of compraTransactionData.tableFinal) { // Usar compraTransactionData en lugar de ventaTransactionData
+            for (const lot of product.lots) {
+                try {
+                    const newStock = {
+                        productId:product.productId,
+                        stockTotal: lot.cantidad,
+                        fechaVencimiento: lot.fechaVencimiento
+                    };
+
+                 
+    
+                    const response = await fetch("http://localhost:3000/api/stocks", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(newStock),
+                    });
+    
+                    if (response.ok) {
+                  
+                        const data = await response.json();
+                        console.log("Nuevo lote agregado:", data);
+                    } else {
+                        console.error("Error al agregar nuevo lote:", response.status);
+                        // Manejo de errores
+                    }
+                } catch (error) {
+                    console.error("Error:", error);
+                    // Manejo de errores de red u otros errores
+                }
+            }
+          }
+        }
+   
 
       
-
-      if (transactionType === 'compra') {
-       
-        compraTransactionData
-      } else if (transactionType === 'venta') {
-        ventaTransactionData
-      }
-
-
-
-        window.location.reload();
-      } else {
-        console.error('Error al crear la transacción:', response.status);
-        // Manejo de errores
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      // Manejo de errores de red u otros errores
+    } else {
+      console.error("Error al crear la transacción:", response.status);
+      // Manejo de errores
     }
-  };
+  } catch (error) {
+    console.error("Error:", error);
+    // Manejo de errores de red u otros errores
+  }
+};
 
   return (
     <div className="w-full mx-auto p-8">
@@ -134,9 +224,9 @@ const NewSaleDate = () => {
       </div>
 
       <UserSelectionComponent
-  onUserDataChange={handleUserDataChange}
-  onTransactionTypeChange={handleTransactionTypeChange}
-/>
+        onUserDataChange={handleUserDataChange}
+        onTransactionTypeChange={handleTransactionTypeChange}
+      />
       <ProductSearch
         onProductDataChange={handleProductDataChange}
         transactionType={transactionType} // Pasar transactionType como prop al ProductSearch
@@ -152,7 +242,12 @@ const NewSaleDate = () => {
           onChange={handleCommentChange}
         />
 
-        <button onClick={handleTransactionPost} className='bg-green-300 rounded hover:bg-green-500 border-black ml-3 flex py-2 px-2 font-normal justify-end'>Crear Transacción</button>
+        <button
+          onClick={handleTransactionPost}
+          className="bg-green-300 rounded hover:bg-green-500 border-black ml-3 flex py-2 px-2 font-normal justify-end"
+        >
+          Crear Transacción
+        </button>
       </div>
     </div>
   );
