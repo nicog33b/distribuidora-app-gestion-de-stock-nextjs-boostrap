@@ -33,6 +33,7 @@ const AddStock = ({ isOpen, closeModal, productId }) => {
         }).then(() => {
           closeModal(); // Close the modal after success message
           window.location.reload();
+          
         });
       } else {
         Swal.fire({

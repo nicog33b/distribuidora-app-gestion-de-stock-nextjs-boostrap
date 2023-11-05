@@ -10,10 +10,12 @@ const EditContactModal = ({ isOpen, closeModal, contact, onEditContact }) => {
   const [contactName, setContactName] = useState('');
   const [contactType, setContactType] = useState('cliente');
   const [contactPhone, setContactPhone] = useState('');
+  const [contactEmpresa, setContactEmpresa] = useState('')
 
   useEffect(() => {
     if (contact) {
       // Utiliza los setters para establecer los estados iniciales
+      setContactEmpresa(contact.empresa)
       setContactName(contact.nombre);
       setContactType(contact.tipo);
       setContactPhone(contact.telefono);
@@ -24,6 +26,7 @@ const EditContactModal = ({ isOpen, closeModal, contact, onEditContact }) => {
 
     const editedContact = {
       ...contact,
+      empresa: contactEmpresa,
       nombre: contactName,
       tipo: contactType,
       telefono: contactPhone,
@@ -86,6 +89,18 @@ const EditContactModal = ({ isOpen, closeModal, contact, onEditContact }) => {
       <div className="bg-white p-4 rounded-lg shadow-lg w-64">
         <h2 className="text-xl font-semibold mb-4">Editar Contacto</h2>
         <form>
+        <div className="mb-4">
+  <label htmlFor="contactEmpresa" className="block text-sm font-medium text-gray-600">
+    Empresa del Contacto
+  </label>
+  <input
+    type="text"
+    id="contactEmpresa"
+    value={contactEmpresa}
+    onChange={(e) => setContactEmpresa(e.target.value)}
+    className="w-full py-2 px-3 border rounded focus:outline-none focus:border-blue-500"
+  />
+</div>
           <div className="mb-4">
             <label htmlFor="contactName" className="block text-sm font-medium text-gray-600">
               Nombre del Contacto

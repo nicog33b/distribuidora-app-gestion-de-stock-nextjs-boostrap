@@ -7,7 +7,7 @@ const NewSaleDate = () => {
   const [productData, setProductData] = useState({});
   const [transactionComment, setTransactionComment] = useState("");
   const [transactionType, setTransactionType] = useState("venta"); // Estado para transactionType
-
+  const [isTransactionPending, setIsTransactionPending] = useState(false); //para controlar la transacción en curso
   const handleUserDataChange = (data) => {
     setUserData(data);
   };
@@ -74,6 +74,7 @@ const NewSaleDate = () => {
         nombre: product.producto.nombre,
         precioUnitario: product.producto.precioCompra,
         lots: selectedProducts.map((product) => ({
+          productId: product.producto._id, // Asegúrate de usar product.producto._id
           cantidad: product.cantidad,
           fechaVencimiento: product.fechaVencimiento,
         }))
@@ -81,6 +82,15 @@ const NewSaleDate = () => {
     };
 
 
+
+    const lotes = { 
+      lots: selectedProducts.map((product) => ({
+      productId: product.producto._id, // Asegúrate de usar product.producto._id
+      cantidad: product.cantidad,
+      fechaVencimiento: product.fechaVencimiento,
+    }))}
+
+ 
 
     let transactionData = {}; // Inicializa un objeto para contener los datos de la transacción
 
@@ -92,6 +102,7 @@ const NewSaleDate = () => {
     }
 
     try {
+      setIsTransactionPending(true); // Establecer el estado como "en proceso"
       const response = await fetch("http://localhost:3000/api/transacciones", {
         method: "POST",
         headers: {
@@ -169,53 +180,57 @@ const NewSaleDate = () => {
               }
             }
           }
-        } else if(transactionType==='compra'){
-          for (const product of compraTransactionData.tableFinal) { // Usar compraTransactionData en lugar de ventaTransactionData
-            for (const lot of product.lots) {
-                try {
-                    const newStock = {
-                        productId:product.productId,
-                        stockTotal: lot.cantidad,
-                        fechaVencimiento: lot.fechaVencimiento
-                    };
+        } else if (transactionType === "compra") {
+          for (const lot of lotes.lots) { // Accede a la clave "lots" para iterar sobre los lotes
+            try {
+              const newStock = {
+                productId: lot.productId,
+                stockTotal: lot.cantidad,
+                fechaVencimiento: lot.fechaVencimiento
+              };
+        
+              const response = await fetch("http://localhost:3000/api/stocks", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify(newStock),
+              });
+        
+              if (response.ok) {
+                const data = await response.json();
 
-                 
-    
-                    const response = await fetch("http://localhost:3000/api/stocks", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify(newStock),
-                    });
-    
-                    if (response.ok) {
-                  
-                        const data = await response.json();
-                        console.log("Nuevo lote agregado:", data);
-                    } else {
-                        console.error("Error al agregar nuevo lote:", response.status);
-                        // Manejo de errores
-                    }
-                } catch (error) {
-                    console.error("Error:", error);
-                    // Manejo de errores de red u otros errores
-                }
+              } else {
+
+                console.error("Error al agregar nuevo lote:", response.status);
+                // Manejo de errores
+              }
+
+            } catch (error) {
+
+              console.error("Error:", error);
+              // Manejo de errores de red u otros errores
+
             }
           }
         }
-   
 
-      
-    } else {
-      console.error("Error al crear la transacción:", response.status);
-      // Manejo de errores
+window.location.reload()
+
+
+
+      } else {
+        console.error("Error al crear la transacción:", response.status);
+        // Manejo de errores
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      // Manejo de errores de red u otros errores
+    } finally {
+      setIsTransactionPending(false); // Cambiar el estado de nuevo a "falso" después de la transacción
     }
-  } catch (error) {
-    console.error("Error:", error);
-    // Manejo de errores de red u otros errores
-  }
-};
+  };
+  
 
   return (
     <div className="w-full mx-auto p-8">
@@ -243,10 +258,12 @@ const NewSaleDate = () => {
         />
 
         <button
+        disabled={isTransactionPending} // Deshabilitar el botón si la transacción está en curso
           onClick={handleTransactionPost}
           className="bg-green-300 rounded hover:bg-green-500 border-black ml-3 flex py-2 px-2 font-normal justify-end"
+          
         >
-          Crear Transacción
+          {isTransactionPending ? 'Procesando...' : 'Crear Transacción'}
         </button>
       </div>
     </div>

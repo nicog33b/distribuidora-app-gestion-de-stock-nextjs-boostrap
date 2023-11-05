@@ -107,7 +107,7 @@ const SalesTable = () => {
                     Ver
                   </button>
                 </td>
-                <td className="p-2 border text-center font-serif border-gray-300">{sale.montoTotal}</td>
+                <td className="p-2 border text-center font-serif border-gray-300">${sale.montoTotal}</td>
                 <td className="p-2 border text-center font-serif border-gray-300">{formatFecha(sale.fecha)}</td>
                 <td className="p-2 border text-center font-serif  border-gray-300">{sale.hora}</td>
                 <td className="p-2 border  border-gray-300 text-center">

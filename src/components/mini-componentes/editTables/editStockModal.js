@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import AddProductModal from './../addProductModal';
+
    
 const EditStockModal = ({ isOpen, closeModal, agregarProductoCompra}) => {
   const [stockTotal, setStockTotal] = useState(0);

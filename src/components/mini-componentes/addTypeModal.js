@@ -18,7 +18,9 @@ const AddTypeModal = ({ isOpen, closeModal }) => {
       });
 
       if (response.ok) {
+
         closeModal();
+        window.location.reload()
       } else {
         console.error('Error al agregar el tipo');
       }

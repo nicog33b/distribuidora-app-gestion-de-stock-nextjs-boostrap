@@ -34,8 +34,8 @@ const Navbar = () => {
       <div className="flex items-center">
         <div className="mr-4">{userName}</div>
         <div className="flex space-x-2">
-          <button onClick={handleLogout} className="bg-red-500 text-white px-4 py-2 rounded">
-            <PowerIcon className="h-4 w-4 rounded" />
+          <button onClick={handleLogout} className="bg-red-500 text-white px-4 py-2 rounded hover:bg-slate-300">
+            <PowerIcon className="h-4 w-4 rounded " />
           </button>
         </div>
       </div>
