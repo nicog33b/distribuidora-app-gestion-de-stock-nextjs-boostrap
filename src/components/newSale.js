@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Swal from "sweetalert2";
 import UserSelectionComponent from "./mini-componentes/peopleSelectInSell";
 import ProductSearch from "./mini-componentes/productSelectedInSell";
 
@@ -113,8 +114,13 @@ const NewSaleDate = () => {
 
       if (response.ok) {
         const data = await response.json();
-        console.log("Transacción creada:", data);
 
+        Swal.fire({
+          title: 'Éxito',
+          text: 'La transaccion ha sido creada con exito.',
+          icon: 'success',
+
+        });
         if (transactionType === "venta") {
           for (const product of ventaTransactionData.tableFinal) {
             for (const lot of product.lots) {
@@ -198,18 +204,28 @@ const NewSaleDate = () => {
               });
         
               if (response.ok) {
+                Swal.fire({
+                  title: 'Éxito',
+                  text: 'Nuevos lotes de compra agregados con exito.',
+                  icon: 'success',
+                });
                 const data = await response.json();
 
               } else {
-
-                console.error("Error al agregar nuevo lote:", response.status);
-                // Manejo de errores
+                Swal.fire({
+                  title: 'Error',
+                  text: 'Error al seleccionar lotes.',
+                  icon: 'error',
+                });
               }
 
             } catch (error) {
-
-              console.error("Error:", error);
-              // Manejo de errores de red u otros errores
+              //MENSAJE DE ERROR EN LOTES DE RED
+              Swal.fire({
+                title: 'Error',
+                text: 'Es posible que haya un error en la red.',
+                icon: 'error',
+              });
 
             }
           }
@@ -220,8 +236,12 @@ window.location.reload()
 
 
       } else {
-        console.error("Error al crear la transacción:", response.status);
-        // Manejo de errores
+      //MENSAJE DE ERROR EN FETCH DE TRANSACCIONES
+        Swal.fire({
+          title: 'Error de transaccion.',
+          text: 'Faltan datos para completar.',
+          icon: 'error',
+        });
       }
     } catch (error) {
       console.error("Error:", error);

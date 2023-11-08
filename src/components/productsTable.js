@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Swal from "sweetalert2";
 import AddStock from "./mini-componentes/editTables/addStockProduct";
 import AddProductModal from "./mini-componentes/addProductModal";
 import AddTypeModal from "./mini-componentes/addTypeModal";
@@ -64,9 +65,17 @@ const [selectedProductId, setSelectedProductId] = useState()
   const copyToClipboard = async (text) => {
     try {
       await navigator.clipboard.writeText(text);
-      console.log("Texto copiado al portapapeles");
+      Swal.fire({
+        title: 'Exito!',
+        text: 'ID del producto copiado.',
+        icon: 'success',
+      });
     } catch (err) {
-      console.error("Error al copiar el texto: ", err);
+      Swal.fire({
+        title: 'Fallo',
+        text: 'No se ha podido copiar el ID del producto.',
+        icon: 'error',
+      });
     }
   };
 
@@ -92,6 +101,7 @@ const [selectedProductId, setSelectedProductId] = useState()
     try {
       const response = await fetch("http://localhost:3000/api/productos");
       if (response.ok) {
+        
         const data = await response.json();
         const productsWithTotalStock = await Promise.all(data.map(async (product) => {
           const totalStock = await getStocksForProduct(product._id);
@@ -100,10 +110,18 @@ const [selectedProductId, setSelectedProductId] = useState()
         setProducts(productsWithTotalStock);
         setFilteredProducts(productsWithTotalStock);
       } else {
-        console.error("Error al cargar los productos desde la API");
+        Swal.fire({
+          title: 'Error',
+          text: 'El servidor de datos ha fallado.',
+          icon: 'error',
+        });
       }
     } catch (error) {
-      console.error("Error al cargar los productos desde la API:", error);
+      Swal.fire({
+        title: 'Error',
+        text: 'El servidor de datos ha fallado.',
+        icon: 'error',
+      });
     }
   };
 
@@ -118,6 +136,7 @@ const [selectedProductId, setSelectedProductId] = useState()
         }
       );
       if (response.ok) {
+        
         loadProducts();
       } else {
         console.error("Error al eliminar el producto desde la API");

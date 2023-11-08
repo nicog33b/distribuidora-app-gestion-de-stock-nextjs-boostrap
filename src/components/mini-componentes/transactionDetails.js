@@ -28,7 +28,7 @@ const TransactionDetailsModal = ({ isOpen, closeModal, transaction }) => {
                 <td className="p-2 border text-center font-serif border-gray-300">{transaction.tipo}</td>
                 <td className="p-2 border text-center font-serif border-gray-300">{formatFecha(transaction.fecha)}</td>
                 <td className="p-2 border text-center font-serif border-gray-300">{transaction.hora}</td>
-                <td className="p-2 border text-center font-serif border-gray-300">{transaction.montoTotal}</td>
+                <td className="p-2 border text-center font-serif border-gray-300">${transaction.montoTotal}</td>
               </tr>
             </tbody>
           </table>
@@ -68,7 +68,7 @@ const TransactionDetailsModal = ({ isOpen, closeModal, transaction }) => {
                     <td className="p-2 border text-center font-serif border-gray-300">
                       {product.lots.reduce((total, lot) => total + lot.cantidad, 0)}
                     </td>
-                    <td className="p-2 border text-center font-serif border-gray-300">{product.precioUnitario}</td>
+                    <td className="p-2 border text-center font-serif border-gray-300">${product.precioUnitario}</td>
                   </tr>
                 ))}
               </tbody>

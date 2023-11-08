@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-
+import Swal from 'sweetalert2';
 const AddProductModal = ({ isOpen, closeModal }) => {
   const [productName, setProductName] = useState('');
   const [productVenta, setProductVenta] = useState('');
@@ -36,16 +36,30 @@ const AddProductModal = ({ isOpen, closeModal }) => {
         body: JSON.stringify({
           nombre: productName,
           precioVenta: parseFloat(productVenta),
-          precioCompra: parseFloat(productCompra), // Aquí corregir el nombre del estado
+          precioCompra: parseFloat(productCompra), 
           imagenURL: productImageURL,
           tipo: productType,
         }),
       });
   
-      // Resto del código...
+      if (response.ok) {
+       //Simplemente se recargan los productos y aparece el nuevo producto.
+      } else {
+        // Mostrar alerta de error si la respuesta no es exitosa
+        Swal.fire({
+          icon: 'error',
+          title: 'Error al agregar el producto',
+          text: 'Hubo un problema al agregar el producto. Por favor, intenta de nuevo.',
+        });
+      }
     } catch (error) {
       console.error('Error al agregar el producto:', error);
-      // Manejar errores de red u otros errores
+      // Mostrar alerta de error en caso de error de red u otro tipo de error
+      Swal.fire({
+        icon: 'error',
+        title: 'Error de red',
+        text: 'Hubo un problema al conectar con el servidor. Por favor, intenta de nuevo más tarde.',
+      });
     }
   };
 

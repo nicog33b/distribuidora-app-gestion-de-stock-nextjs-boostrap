@@ -34,10 +34,18 @@ const SalesTable = () => {
         // Si la eliminación fue exitosa, actualiza la lista de ventas
         fetchSalesData();
       } else {
-        console.error('Error al eliminar la transacción');
+        Swal.fire({
+          icon: 'success',
+          title: 'Transaccion eliminada.',
+          text: 'La transaccion ha sido eliminada exitosamente.',
+        });
       }
     } catch (error) {
-      console.error('Error al eliminar la transacción:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'No ha sido posible eliminar transaccion.',
+      });
     }
   };
   

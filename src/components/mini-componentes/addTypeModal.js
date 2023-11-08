@@ -18,11 +18,19 @@ const AddTypeModal = ({ isOpen, closeModal }) => {
       });
 
       if (response.ok) {
-
+        Swal.fire({
+          icon: 'success',
+          title: '¡Nuevo tipo agregado!',
+          text: 'El tipo de producto ha sido agregado.',
+        });
         closeModal();
         window.location.reload()
       } else {
-        console.error('Error al agregar el tipo');
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Error al intentar agregar tipo.',
+        });
       }
     } catch (error) {
       console.error('Error al agregar el tipo:', error);

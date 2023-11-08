@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const LoteProductModal = ({ product, isOpen, closeModal, agregarProducto }) => {
+const LoteProductModal = ({ product, isOpen, closeModal, agregarProducto, transactionType}) => {
   const [lots, setLots] = useState([]);
   const [selectedLots, setSelectedLots] = useState({});
 

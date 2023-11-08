@@ -22,9 +22,17 @@ const ContactTable = () => {
       if (response.ok) {
         // Eliminación exitosa, refrescar la tabla
         setTableRefreshing(!isTableRefreshing);
-        console.log('Contacto eliminado correctamente');
+        Swal.fire({
+          icon: 'success',
+          title: 'Contacto eliminado.',
+          text: 'El contacto ha sido eliminado exitosamente.',
+        });
       } else {
-        console.error('Error al eliminar el contacto desde la API');
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'No se ha podido eliminar el usuario.',
+        });
       }
     } catch (error) {
       console.error('Error al eliminar el contacto desde la API:', error);

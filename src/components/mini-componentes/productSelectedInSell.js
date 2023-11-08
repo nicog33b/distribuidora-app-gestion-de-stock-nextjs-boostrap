@@ -19,11 +19,21 @@ const ProductSearch = ({onProductDataChange, transactionType, }) => {
   useEffect(() => {
     if (selectedProducts.length > 0) {
       if (transactionType === 'compra') {
+      
+        setFilteredProducts([])
+        setSearchTerm('')
+        setSelectedProduct([])
         setSelectedProducts([]);
         setTableProductsStocks([]);
+        
       } else if (transactionType === 'venta') {
+      
+        setFilteredProducts([])
+        setSearchTerm('')
+        setSelectedProduct([])
         setSelectedProducts([]);
         setTableProductsStocks([]);
+
       }
     }
   }, [transactionType]);
@@ -259,6 +269,7 @@ const ProductSearch = ({onProductDataChange, transactionType, }) => {
           product={selectedProduct}
           closeModal={closeLoteModal}
           agregarProducto={agregarProducto}
+         transactionType={transactionType} // Pasar la prop transactionType aquí
         />
       )}
 

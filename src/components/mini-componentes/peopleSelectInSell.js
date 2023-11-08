@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Swal from 'sweetalert2';
 import { TrashIcon } from '@heroicons/react/24/solid';
 const UserSelectionComponent = ({ onUserDataChange, onTransactionTypeChange,}) => {
     const [searchTerm, setSearchTerm] = useState('');
@@ -30,6 +31,7 @@ const UserSelectionComponent = ({ onUserDataChange, onTransactionTypeChange,}) =
       const updatedUsersList = [...selectedUsersList];
       updatedUsersList.splice(index, 1);
       setSelectedUsersList(updatedUsersList);
+      
     };
   
     const handleSelectUser = (user) => {
@@ -38,8 +40,11 @@ const UserSelectionComponent = ({ onUserDataChange, onTransactionTypeChange,}) =
         setSelectedUsersList([...selectedUsersList, user]);
         setSearchTerm('')
       } else {
-        console.log('El usuario ya está en la lista.');
-        // Aquí podrías mostrar un mensaje de que el usuario ya está en la lista si lo deseas
+        Swal.fire({
+          icon: 'error',
+          title: 'Usuario agregado',
+          text: 'Este usuario ya ha sido asignado a la transaccion.',
+        });
       }
     };
   
