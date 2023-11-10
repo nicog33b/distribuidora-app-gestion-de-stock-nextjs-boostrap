@@ -23,7 +23,7 @@ const Login = () => {
   const handleLogin = async () => {
     event.preventDefault();
     try {
-      const response = await fetch("http://localhost:3000/api/usuarios");
+      const response = await fetch("http://vps-3732767-x.dattaweb.com:82/api/usuarios");
       if (response.status === 200) {
         const usuarios = await response.json();
         const usuarioEncontrado = usuarios.find((u) => u.usuario === usuario && u.contrasenia === password);
