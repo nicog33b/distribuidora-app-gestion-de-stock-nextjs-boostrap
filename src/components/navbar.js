@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
-import distribuidoraImage from '/public/logo3.png';
 import { PowerIcon, Cog6ToothIcon } from '@heroicons/react/24/solid';
+import { distribuidoraImage } from '/public/logo3.png';
 
 const Navbar = () => {
   const [userName, setUserName] = useState(''); // Inicializa userName como un estado
@@ -25,11 +25,13 @@ const Navbar = () => {
     window.location.href = '/login';
   };
 
+
+  const distribuidoraImage = 'https://drive.google.com/uc?id=1AbL1ITzNpSL1sQfa8xg0NEz8E1liIbLH';
  
   return (
-    <div className="w-full bg-amber-800 text-white p-2 flex justify-between items-center shadow-sm shadow-black border border-amber-900">
-      <div className="h-12 w-12">
-        <Image src={distribuidoraImage} alt="Distribuidora Logo" />
+    <div className="w-full bg-amber-800 text-white p-1 flex justify-between items-center shadow-sm shadow-black border border-amber-900">
+      <div className="h-16 w-16">
+        <img src={distribuidoraImage}   className='object-cover' alt="Distribuidora Logo"/>
       </div>
       <div className="flex items-center">
         <div className="mr-4">{userName}</div>
