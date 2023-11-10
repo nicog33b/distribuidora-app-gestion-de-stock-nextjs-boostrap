@@ -58,7 +58,7 @@ const Login = () => {
       <div className=" bg-amber-900 max-w-md w-full p-6 space-y-6 rounded-lg shadow-lg">
         <div className="p-0">
           <div className="mx-auto mb-4 w-64 h-64">
-            <Image src={distribuidoraImage} alt="Distribuidora Logo" layout="responsive" />
+            <img src={distribuidoraImage} alt="Distribuidora Logo" layout="responsive" />
           </div>
         </div>
 
