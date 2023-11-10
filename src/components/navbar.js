@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
-import distribuidoraImage from '../../public/logo3.png';
+import distribuidoraImage from '/public/logo3.png';
 import { PowerIcon, Cog6ToothIcon } from '@heroicons/react/24/solid';
 
 const Navbar = () => {
