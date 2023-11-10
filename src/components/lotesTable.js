@@ -16,7 +16,7 @@ const LotesTable = () => {
  
     const deleteLote = async (loteId) => {
         try {
-          const response = await fetch(`http://localhost:3000/api/stocks/${loteId}`, {
+          const response = await fetch(`http://vps-3732767-x.dattaweb.com:82/api/stocks/${loteId}`, {
             method: 'DELETE',
           });
     
@@ -34,7 +34,7 @@ const LotesTable = () => {
   
   const fetchLotesData = async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/stocks');
+      const response = await fetch('http://vps-3732767-x.dattaweb.com:82/api/stocks');
       if (response.ok) {
         const data = await response.json();
         setLotes(data);

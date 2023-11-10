@@ -33,7 +33,7 @@ export default function InfoCuadros() {
 
   useEffect(() => {
     // Llamada a la API para obtener la lista de productos
-    fetch("http://localhost:3000/api/productos/")
+    fetch("http://vps-3732767-x.dattaweb.com:82/api/productos/")
       .then(response => response.json())
       .then(data => {
         setTotalProductos(data.length); // Establecer la cantidad total de productos

@@ -28,7 +28,7 @@ const AddContactModal = ({ isOpen, closeModal }) => {
     console.log('Datos a enviar:', newContact);
 
     // Realiza una solicitud para verificar si el correo electrónico ya existe
-    fetch('http://localhost:3000/api/personas')
+    fetch('http://vps-3732767-x.dattaweb.com:82/personas')
       .then((response) => response.json())
       .then((data) => {
         if (data.some((persona) => persona.email === contactEmail)) {
@@ -40,7 +40,7 @@ const AddContactModal = ({ isOpen, closeModal }) => {
           });
         } else {
           // Si el correo electrónico no está registrado, procede con la inserción
-          fetch('http://localhost:3000/api/personas', {
+          fetch('http://vps-3732767-x.dattaweb.com:82/api/personas', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

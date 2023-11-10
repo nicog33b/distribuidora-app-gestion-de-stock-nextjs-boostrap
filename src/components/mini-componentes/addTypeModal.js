@@ -6,7 +6,7 @@ const AddTypeModal = ({ isOpen, closeModal }) => {
 
   const handleAddType = async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/types', {
+      const response = await fetch('http://vps-3732767-x.dattaweb.com:82/api/types', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

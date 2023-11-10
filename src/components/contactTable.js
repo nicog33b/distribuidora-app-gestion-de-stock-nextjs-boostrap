@@ -15,7 +15,7 @@ const ContactTable = () => {
 
   const handleDeleteContact = async (contactId) => {
     try {
-      const response = await fetch(`http://localhost:3000/api/personas/${contactId}`, {
+      const response = await fetch(`http://vps-3732767-x.dattaweb.com:82/api/personas/${contactId}`, {
         method: 'DELETE',
       });
 
@@ -42,7 +42,7 @@ const ContactTable = () => {
   useEffect(() => {
     const loadContacts = async () => {
       try {
-        const response = await fetch('http://localhost:3000/api/personas');
+        const response = await fetch('http://vps-3732767-x.dattaweb.com:82/api/personas');
         if (response.ok) {
           const data = await response.json();
           setContacts(data);

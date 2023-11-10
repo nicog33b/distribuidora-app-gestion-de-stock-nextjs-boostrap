@@ -193,7 +193,7 @@ const ProductSearch = ({onProductDataChange, transactionType, }) => {
   
 
   useEffect(() => {
-    fetch('http://localhost:3000/api/productos')
+    fetch('http://vps-3732767-x.dattaweb.com:82/api/productos')
       .then(response => response.json())
       .then(data => {
         setProducts(data);

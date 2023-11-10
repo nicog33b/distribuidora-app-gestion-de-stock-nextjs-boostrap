@@ -36,7 +36,7 @@ const EditContactModal = ({ isOpen, closeModal, contact, onEditContact }) => {
     console.log('Datos a enviar:', editedContact);
 
     // Realiza una solicitud PUT para actualizar el contacto
-    fetch(`http://localhost:3000/api/personas/${contact._id}`, {
+    fetch(`http://vps-3732767-x.dattaweb.com:82/api/personas/${contact._id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

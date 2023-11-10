@@ -17,7 +17,7 @@ const AddStock = ({ isOpen, closeModal, productId }) => {
     };
   
     try {
-      const response = await fetch('http://localhost:3000/api/stocks', {
+      const response = await fetch('http://vps-3732767-x.dattaweb.com:82/api/stocks', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

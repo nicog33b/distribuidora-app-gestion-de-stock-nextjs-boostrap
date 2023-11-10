@@ -82,7 +82,7 @@ const [selectedProductId, setSelectedProductId] = useState()
 
   const getStocksForProduct = async (productId) => {
     try {
-      const response = await fetch(`http://localhost:3000/api/stocks/${productId}`);
+      const response = await fetch(`http://vps-3732767-x.dattaweb.com:82/stocks/${productId}`);
       if (response.ok) {
         const data = await response.json();
         const stockTotal = data.reduce((total, stock) => total + stock.stockTotal, 0);
@@ -99,7 +99,7 @@ const [selectedProductId, setSelectedProductId] = useState()
 
   const loadProducts = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/productos");
+      const response = await fetch("http://vps-3732767-x.dattaweb.com:82/api/productos");
       if (response.ok) {
         
         const data = await response.json();
@@ -130,7 +130,7 @@ const [selectedProductId, setSelectedProductId] = useState()
   const deleteProduct = async (productId) => {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/productos/${productId}`,
+        `http://vps-3732767-x.dattaweb.com:82/api/productos/${productId}`,
         {
           method: "DELETE",
         }

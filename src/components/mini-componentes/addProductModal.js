@@ -28,7 +28,7 @@ const AddProductModal = ({ isOpen, closeModal }) => {
 
   const handleAddProduct = async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/productos', {
+      const response = await fetch('http://vps-3732767-x.dattaweb.com:82/api/productos', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

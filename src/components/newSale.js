@@ -104,7 +104,7 @@ const NewSaleDate = () => {
 
     try {
       setIsTransactionPending(true); // Establecer el estado como "en proceso"
-      const response = await fetch("http://localhost:3000/api/transacciones", {
+      const response = await fetch("http://vps-3732767-x.dattaweb.com:82/api/transacciones", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -195,7 +195,7 @@ const NewSaleDate = () => {
                 fechaVencimiento: lot.fechaVencimiento
               };
         
-              const response = await fetch("http://localhost:3000/api/stocks", {
+              const response = await fetch("http://vps-3732767-x.dattaweb.com:82/api/stocks", {
                 method: "POST",
                 headers: {
                   "Content-Type": "application/json",

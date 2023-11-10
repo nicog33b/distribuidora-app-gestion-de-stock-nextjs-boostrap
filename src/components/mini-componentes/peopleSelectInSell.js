@@ -49,7 +49,7 @@ const UserSelectionComponent = ({ onUserDataChange, onTransactionTypeChange,}) =
     };
   
     useEffect(() => {
-      fetch('http://localhost:3000/api/personas')
+      fetch('http://vps-3732767-x.dattaweb.com:82/api/personas')
         .then(response => response.json())
         .then(data => {
           setUsers(data);

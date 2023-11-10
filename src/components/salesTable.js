@@ -26,7 +26,7 @@ const SalesTable = () => {
 
   const deleteTransaction = async (id) => {
     try {
-      const response = await fetch(`http://localhost:3000/api/transacciones/${id}`, {
+      const response = await fetch(`http://vps-3732767-x.dattaweb.com:82/api/transacciones/${id}`, {
         method: 'DELETE',
       });
 
@@ -51,7 +51,7 @@ const SalesTable = () => {
   
   const fetchSalesData = async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/transacciones');
+      const response = await fetch('http://vps-3732767-x.dattaweb.com:82/api/transacciones');
       if (response.ok) {
         const data = await response.json();
         setSales(data);
