@@ -82,7 +82,7 @@ const [selectedProductId, setSelectedProductId] = useState()
 
   const getStocksForProduct = async (productId) => {
     try {
-      const response = await fetch(`http://vps-3732767-x.dattaweb.com:82/stocks/${productId}`);
+      const response = await fetch(`http://vps-3732767-x.dattaweb.com:82/api/stocks/${productId}`);
       if (response.ok) {
         const data = await response.json();
         const stockTotal = data.reduce((total, stock) => total + stock.stockTotal, 0);

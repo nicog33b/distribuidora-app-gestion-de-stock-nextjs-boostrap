@@ -10,7 +10,7 @@ export default function InfoCuadros() {
   const [totalVentas, setTotalVentas] = useState(0);
 
   useEffect(() => {
-    fetch("http://localhost:3000/api/transacciones")
+    fetch("http://vps-3732767-x.dattaweb.com:82/api/transacciones")
       .then(response => response.json())
       .then(data => {
         // Filtrar las compras y sumar sus montos totales

@@ -11,7 +11,7 @@ const AddProductModal = ({ isOpen, closeModal }) => {
   useEffect(() => {
     const fetchTypes = async () => {
       try {
-        const response = await fetch('http://localhost:3000/api/types');
+        const response = await fetch('http://vps-3732767-x.dattaweb.com:82/api/types');
         if (response.ok) {
           const data = await response.json();
           setTypes(data);

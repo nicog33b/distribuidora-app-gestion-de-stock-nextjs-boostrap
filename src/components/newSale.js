@@ -126,7 +126,7 @@ const NewSaleDate = () => {
             for (const lot of product.lots) {
               try {
                 const stockResponse = await fetch(
-                  `http://localhost:3000/api/stock/${lot.stockId}`
+                  `http://vps-3732767-x.dattaweb.com:82/api/stock/${lot.stockId}`
                 );
                 if (stockResponse.ok) {
                   const stockData = await stockResponse.json();
@@ -141,7 +141,7 @@ const NewSaleDate = () => {
 
                       // Realizar el PUT con el stockTotal actualizado
                       const updateStockResponse = await fetch(
-                        `http://localhost:3000/api/stocks/${lot.stockId}`,
+                        `http://vps-3732767-x.dattaweb.com:82/api/stocks/${lot.stockId}`,
                         {
                           method: "PUT",
                           headers: {
