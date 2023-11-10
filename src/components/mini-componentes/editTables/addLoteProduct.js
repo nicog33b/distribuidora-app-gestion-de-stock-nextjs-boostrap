@@ -55,7 +55,8 @@ const LoteProductModal = ({ product, isOpen, closeModal, agregarProducto, transa
       <div className="modal-container bg-white w-11/12 md:max-w-2xl mx-auto rounded shadow-lg z-50 overflow-y-auto">
         <div className="modal-content py-4 text-left px-6">
           <div className='CONTENIDO'>
-            <div className="overflow-x-auto">
+          <div className="mb-4 overflow-auto max-h-80">
+              
               <table className="w-full table-auto text-center">
                 <thead>
                   <tr className="bg-gray-200 text-gray-700">

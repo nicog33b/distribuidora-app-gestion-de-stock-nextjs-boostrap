@@ -4,7 +4,14 @@ import { PlusIcon, MagnifyingGlassIcon,  PencilIcon, EyeIcon, TrashIcon } from '
 
 const LotesTable = () => {
     const [lotes, setLotes] = useState([])
+    const [searchTerm, setSearchTerm] = useState('');
 
+
+  
+    const filteredLotes = lotes.filter(lote => {
+      return lote.productId.toLowerCase().includes(searchTerm.toLowerCase());
+    });
+  
  
  
     const deleteLote = async (loteId) => {
@@ -52,14 +59,13 @@ const LotesTable = () => {
     <div className="p-2">
       <div className="mb-4 flex items-center justify-between">
         <div className="flex w-12/12">
-          <input
+        <input
             type="text"
-            placeholder="Buscar lotes"
+            placeholder="Buscar productId"
             className="p-2 border border-gray-300 rounded-lg"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
-          <button className="bg-blue-500 text-white p-2 rounded-lg ml-2">
-            <MagnifyingGlassIcon className="w-4 h-4" />
-          </button>
         </div>
 
 
@@ -74,8 +80,8 @@ const LotesTable = () => {
         <table className="w-full border-collapse border border-gray-300">
           <thead>
             <tr className="bg-gray-200">
-              <th className="p-2">Id</th>
-              <th className='p-2'>IdProduct</th>
+          
+              <th className='p-2'>Id producto</th>
               <th className="p-2">Vencimiento</th>
               <th className="p-2">Ingreso</th>
               <th className="p-2">Stock</th>
@@ -83,11 +89,9 @@ const LotesTable = () => {
             </tr>
           </thead>
           <tbody>
-        {lotes.map((lote) => (
+          {filteredLotes.map((lote) => (
           <tr key={lote._id}>
-            <td className="p-2 border text-center font-serif border-gray-300">
-            {lote._id}
-            </td>
+            
             <td className="p-2 border text-center font-serif border-gray-300">
             {lote.productId}
             </td>
