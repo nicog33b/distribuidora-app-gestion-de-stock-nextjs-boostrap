@@ -53,7 +53,7 @@ const TransactionDetailsModal = ({ isOpen, closeModal, transaction }) => {
   </table>
 )}
     <div className="mb-4 overflow-auto max-h-80">
-    {transaction.tipo.trim().toLowerCase() === "entrada" || transaction.tipo.trim().toLowerCase() === "salida" ? (
+  {!(transaction.tipo.trim().toLowerCase() === "entrada" || transaction.tipo.trim().toLowerCase() === "salida") ? null : (
     <table className="w-full border-collapse border border-gray-300">
       <thead>
         <tr className="bg-gray-200">
@@ -74,8 +74,9 @@ const TransactionDetailsModal = ({ isOpen, closeModal, transaction }) => {
         ))}
       </tbody>
     </table>
-  ) : null}
+  )}
 </div>
+
 
 
 {/* Mostrar el comentario solo si existe */}
