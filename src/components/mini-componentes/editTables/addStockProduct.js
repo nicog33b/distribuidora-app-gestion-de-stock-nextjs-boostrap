@@ -20,7 +20,7 @@ const AddStock = ({ isOpen, closeModal, product }) => {
   
     const newStock = {
       productId: product._id,
-      stockTotal: parseInt(product.stockTotal),
+      stockTotal: parseInt(stockTotal),
       fechaVencimiento,
       nombre, // Incorporar el nombre del lote
     };
@@ -202,7 +202,7 @@ const AddStock = ({ isOpen, closeModal, product }) => {
               />
             </div>
             <div className="flex justify-center mt-4 ">
-              <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-3">Agregar Stock</button>
+              <button onClick={handleStockSubmit} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-3">Agregar Stock</button>
               <buttonon onClick={handleBuySubmit}  className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Agregar Compra</buttonon>
             </div>
           </form>
