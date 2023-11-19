@@ -11,6 +11,8 @@ const EditContactModal = ({ isOpen, closeModal, contact, onEditContact }) => {
   const [contactType, setContactType] = useState('cliente');
   const [contactPhone, setContactPhone] = useState('');
   const [contactEmpresa, setContactEmpresa] = useState('')
+  const [contactEmail, setContactEmail] = useState('');
+
 
   useEffect(() => {
     if (contact) {
@@ -19,6 +21,7 @@ const EditContactModal = ({ isOpen, closeModal, contact, onEditContact }) => {
       setContactName(contact.nombre);
       setContactType(contact.tipo);
       setContactPhone(contact.telefono);
+      setContactEmail(contact.email); 
     }
   }, [contact]);
   const handleEditContact = (event) => {
@@ -30,6 +33,7 @@ const EditContactModal = ({ isOpen, closeModal, contact, onEditContact }) => {
       nombre: contactName,
       tipo: contactType,
       telefono: contactPhone,
+      email: contactEmail, 
     };
 
     // Mostrar los datos antes de enviar la solicitud
@@ -113,6 +117,18 @@ const EditContactModal = ({ isOpen, closeModal, contact, onEditContact }) => {
               className="w-full py-2 px-3 border rounded focus:outline-none focus:border-blue-500"
             />
           </div>
+          <div className="mb-4">
+  <label htmlFor="contactEmail" className="block text-sm font-medium text-gray-600">
+    Correo Electrónico del Contacto
+  </label>
+  <input
+    type="text"
+    id="contactEmail"
+    value={contactEmail}
+    onChange={(e) => setContactEmail(e.target.value)}
+    className="w-full py-2 px-3 border rounded focus:outline-none focus:border-blue-500"
+  />
+</div>
           <div className="mb-4">
             <label htmlFor="contactType" className="block text-sm font-medium text-gray-600">
               Tipo de Contacto

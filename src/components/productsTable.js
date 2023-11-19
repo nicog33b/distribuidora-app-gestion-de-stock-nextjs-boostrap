@@ -4,16 +4,16 @@ import AddStock from "./mini-componentes/editTables/addStockProduct";
 import AddProductModal from "./mini-componentes/addProductModal";
 import AddTypeModal from "./mini-componentes/addTypeModal";
 import EditProductModal from "./mini-componentes/editTables/editProductModal";
+import CreateSaleModal from "./mini-componentes/addSaleProduct";
 
 import {
   PlusIcon,
-  MagnifyingGlassIcon,
+  CurrencyDollarIcon,
   PencilIcon,
   EyeIcon,
   TrashIcon,
   ClipboardIcon,
   ShareIcon,
-  CalendarDaysIcon
 } from "@heroicons/react/24/solid";
 
 const ProductTable = () => {
@@ -27,10 +27,17 @@ const ProductTable = () => {
   const [isAddStockModalOpen, setAddStockModalOpen] = useState(false);
 const [selectedProductId, setSelectedProductId] = useState()
 
-  const openAddStockModal = (productId) => {
-    setAddStockModalOpen(true);
-    setSelectedProductId(productId); // Fijar el ID del producto seleccionado
-  };
+const [selectedProductForSale, setSelectedProductForSale] = useState(null);
+const [isCreateSaleModalOpen, setCreateSaleModalOpen] = useState(false);
+
+
+
+const openCreateIndividualSell = (product) => {
+  setSelectedProductForSale(product);
+  setCreateSaleModalOpen(true);
+};
+
+
 
   const closeAddStockModal = () => {
     setAddStockModalOpen(false);
@@ -58,10 +65,18 @@ const [selectedProductId, setSelectedProductId] = useState()
     setEditProductModalOpen(true);
   };
 
+  const openAddStockModal = (product) => {
+    setAddStockModalOpen(true);
+    setSelectedProduct(product); // Fijar el ID del producto seleccionado
+  };
+
   const closeEditProductModal = () => {
     setEditProductModalOpen(false);
   };
 
+
+
+  /*
   const copyToClipboard = async (text) => {
     try {
       await navigator.clipboard.writeText(text);
@@ -79,7 +94,7 @@ const [selectedProductId, setSelectedProductId] = useState()
     }
   };
 
-
+*/
   const getStocksForProduct = async (productId) => {
     try {
       const response = await fetch(`http://vps-3732767-x.dattaweb.com:82/api/stocks/${productId}`);
@@ -257,16 +272,32 @@ const [selectedProductId, setSelectedProductId] = useState()
                   </button>
                   <button
                     className="bg-amber-800 text-white p-2 rounded-lg m-1"
-                    onClick={() => openAddStockModal(product._id)}
+                    onClick={() => openAddStockModal(product)}
                   >
                     <ClipboardIcon className="h-4 w-4"></ClipboardIcon>
                   </button>
-                  <button className="bg-amber-800 text-white p-2 rounded-lg m-1">
+
+              
+                  <button
+                    className="bg-yellow-500 text-white p-2 rounded"
+                    onClick={() => openCreateIndividualSell(product)}
+                  >
+                    <CurrencyDollarIcon className="h-4 w-4" />
+                  </button>
+
+
+
+                 {/*  BOTON DE COPIAR ID 
+
+                 <button className="bg-amber-800 text-white p-2 rounded-lg m-1">
                     <ShareIcon
                       className="h-4 w-4"
                       onClick={() => copyToClipboard(product._id)}
                     />
                   </button>
+
+                  */}
+
                 </td>
               </tr>
             ))}
@@ -277,10 +308,17 @@ const [selectedProductId, setSelectedProductId] = useState()
       {/*
  ----------------- MODALS ------------------------
 */}
+
+<CreateSaleModal
+        isOpen={isCreateSaleModalOpen}
+        closeModal={() => setCreateSaleModalOpen(false)}
+        product={selectedProductForSale}
+      />
+
     <AddStock
         isOpen={isAddStockModalOpen}
         closeModal={closeAddStockModal}
-        productId={selectedProductId} // Asegúrate de tener el ID del producto seleccionado
+        product={selectedProduct} // Asegúrate de tener el ID del producto seleccionado
       />
 
       <EditProductModal

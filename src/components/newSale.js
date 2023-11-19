@@ -9,9 +9,13 @@ const NewSaleDate = () => {
   const [transactionComment, setTransactionComment] = useState("");
   const [transactionType, setTransactionType] = useState("venta"); // Estado para transactionType
   const [isTransactionPending, setIsTransactionPending] = useState(false); //para controlar la transacción en curso
+ 
+ 
+ 
   const handleUserDataChange = (data) => {
     setUserData(data);
   };
+  
 
   const handleProductDataChange = (data) => {
     setProductData(data);
@@ -84,12 +88,7 @@ const NewSaleDate = () => {
 
 
 
-    const lotes = { 
-      lots: selectedProducts.map((product) => ({
-      productId: product.producto._id, // Asegúrate de usar product.producto._id
-      cantidad: product.cantidad,
-      fechaVencimiento: product.fechaVencimiento,
-    }))}
+   
 
  
 

@@ -1,17 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
 
-const AddStock = ({ isOpen, closeModal, productId }) => {
+
+const AddStock = ({ isOpen, closeModal, product }) => {
   const [stockTotal, setStockTotal] = useState(0);
   const [fechaVencimiento, setFechaVencimiento] = useState('');
   const [nombre, setNombre] = useState(''); // Nuevo campo para identificar el lote
 
+
+ // useEffect para imprimir en la consola los valores de product al iniciar el modal
+ useEffect(() => {
+  console.log("Product al iniciar el modal:", product);
+}, [product]);
+
+
   const handleStockSubmit = async (event) => {
+    
     event.preventDefault();
   
     const newStock = {
-      productId,
-      stockTotal: parseInt(stockTotal),
+      productId: product._id,
+      stockTotal: parseInt(product.stockTotal),
       fechaVencimiento,
       nombre, // Incorporar el nombre del lote
     };
@@ -31,9 +40,9 @@ const AddStock = ({ isOpen, closeModal, productId }) => {
           text: 'Nuevo stock agregado exitosamente',
           icon: 'success',
         }).then(() => {
-          closeModal(); // Close the modal after success message
-          window.location.reload();
           
+          closeModal();
+          window.location.reload();
         });
       } else {
         Swal.fire({
@@ -51,7 +60,114 @@ const AddStock = ({ isOpen, closeModal, productId }) => {
       });
     }
   };
-  
+
+ //@author: Nico
+
+ const handleBuySubmit = async (event) => {
+  event.preventDefault();
+
+  // Verificar si el producto y su precio de compra están definidos
+  if (!product || !product.precioCompra) {
+    console.error('Error: product o product.precioCompra no están definidos');
+    return;
+  }
+
+  // Calcular el monto total multiplicando stockTotal por precioCompra
+  const montoTotal = stockTotal * product.precioCompra;
+
+  const newStock = {
+    productId: product._id,
+    stockTotal: parseInt(stockTotal),
+    fechaVencimiento,
+    nombre, // Incorporar el nombre del lote
+  };
+
+  try {
+    // Primero, enviar el nuevo stock a api/stocks
+    const stockResponse = await fetch('http://vps-3732767-x.dattaweb.com:82/api/stocks', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(newStock),
+    });
+
+
+    if (stockResponse.ok) {
+
+
+
+       // Obtener la fecha y hora actual
+       const currentDate = new Date();
+       const formattedDate = currentDate.toISOString().split('T')[0]; // Formato YYYY-MM-DD
+       const formattedTime = currentDate.toTimeString().split(' ')[0]; // Formato HH:mm:ss
+
+       
+      // Si la solicitud a api/stocks es exitosa, entonces realizar la solicitud a api/transacciones
+      const compraTransactionData = {
+        tipo: 'compraP',
+        fecha: formattedDate,
+        hora: formattedTime,
+        montoTotal: montoTotal,
+        personas: [],
+        tableFinal: {
+          productId: product._id,
+          nombre: product.nombre,
+          precioUnitario: product.precioCompra,
+          lots: {
+            productId: newStock.productId,
+            cantidad: newStock.stockTotal,
+            fechaVencimiento: newStock.fechaVencimiento,
+          },
+        },
+      };
+
+      const transaccionResponse = await fetch('http://vps-3732767-x.dattaweb.com:82/api/transacciones', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(compraTransactionData),
+      });
+
+      if (transaccionResponse.ok) {
+        // Ambas solicitudes fueron exitosas
+        Swal.fire({
+          title: 'Éxito',
+          text: 'Nueva transacción de compra agregada exitosamente',
+          icon: 'success',
+        }).then(() => {
+          closeModal();
+          window.location.reload();
+        });
+      } else {
+        // Error en la solicitud a api/transacciones
+        Swal.fire({
+          title: 'Error',
+          text: 'Hubo un problema al agregar la transacción de compra',
+          icon: 'error',
+        });
+      }
+    } else {
+      // Error en la solicitud a api/stocks
+      Swal.fire({
+        title: 'Error',
+        text: 'Hubo un problema al agregar el nuevo stock',
+        icon: 'error',
+      });
+    }
+  } catch (error) {
+    console.error('Error al agregar stock o transacción de compra:', error);
+    Swal.fire({
+      title: 'Error',
+      text: 'Hubo un problema al agregar el stock o la transacción de compra',
+      icon: 'error',
+    });
+  }
+};
+
+                                                                                                                                                                                                                                                                                                               
+
 
   return (
     <div className={`modal fixed w-full h-full top-0 left-0 flex items-center justify-center ${isOpen ? '' : 'hidden'}`}>
@@ -85,8 +201,9 @@ const AddStock = ({ isOpen, closeModal, productId }) => {
                 className="w-full bg-gray-200 rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               />
             </div>
-            <div className="flex justify-center mt-4">
-              <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Agregar Stock</button>
+            <div className="flex justify-center mt-4 ">
+              <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-3">Agregar Stock</button>
+              <buttonon onClick={handleBuySubmit}  className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Agregar Compra</buttonon>
             </div>
           </form>
 
