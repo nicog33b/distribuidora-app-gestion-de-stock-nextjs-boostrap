@@ -8,7 +8,7 @@ export default function InfoCuadros() {
   const [totalVentasP, setTotalVentasP] = useState(0);
 
   useEffect(() => {
-    fetch("http://vps-3732767-x.dattaweb.com:82/api/transacciones")
+    fetch("http://localhost:3001/api/transacciones")
       .then((response) => response.json())
       .then((data) => {
         // Filtrar las compras y sumar sus montos totales
@@ -55,7 +55,7 @@ export default function InfoCuadros() {
 
   useEffect(() => {
     // Llamada a la API para obtener la lista de productos
-    fetch("http://vps-3732767-x.dattaweb.com:82/api/productos/")
+    fetch("http://localhost:3001/api/productos/")
       .then((response) => response.json())
       .then((data) => {
         setTotalProductos(data.length); // Establecer la cantidad total de productos
@@ -66,17 +66,10 @@ export default function InfoCuadros() {
   }, []);
 
   return (
-    <div className="flex flex-wrap justify-center items-center">
-      <div className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 p-4">
-        <Square text="Ventas" sign="$" subtext={totalVentas} />
-      </div>
-
-      <div className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 p-4">
-        <Square text="Compras" sign="$" subtext={totalCompras} />
-      </div>
-      <div className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 p-4">
-        <Square text="Productos" subtext={totalProductos} />
-      </div>
+    <div className="flex flex-wrap justify-around items-center">
+      <Square title="Ventas" sign="$" value={totalVentas} />
+      <Square title="Compras" sign="$" value={totalCompras} />
+      <Square title="Productos" value={totalProductos} />
     </div>
   );
 }
